@@ -1,0 +1,20 @@
+{
+  "name": "Movies API .NET 8",
+  "image": "mcr.microsoft.com/dotnet/sdk:8.0",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "eamodio.gitlens",
+        "humao.rest-client"
+      ]
+    }
+  },
+  "containerEnv": {
+    "ASPNETCORE_URLS": "http://0.0.0.0:5000"
+  },
+  "forwardPorts": [
+    5000
+  ],
+  "postCreateCommand": "dotnet --info && dotnet restore ./Movies.Api/Movies.Api.csproj"
+}

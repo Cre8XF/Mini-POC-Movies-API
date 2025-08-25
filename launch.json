@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Launch (Movies.Api)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/Movies.Api/bin/Debug/net8.0/Movies.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Movies.Api",
+      "preLaunchTask": "build",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://0.0.0.0:5000"
+      },
+      "stopAtEntry": false
+    }
+  ]
+}
