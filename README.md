@@ -1,21 +1,25 @@
-# Movies API – Cloud‑Ready Plug‑and‑Play
+# Movies API – Mini‑POC (.NET 8, Swagger, Docker)
 
-Dette repoet er klart for **GitHub Codespaces** (ingen lokal installasjon), har **.devcontainer** konfig, **Swagger**, **health check**, **Dockerfile**, og en **GitHub Actions** CI som bygger og (valgfritt) pusher container til GHCR.
+En liten **proof‑of‑concept** for et REST‑API i **.NET 8**. Prosjektet kjører rett i **GitHub Codespaces** (ingen lokal installasjon), har **Swagger**, **health check**, **CORS**, **Dockerfile** og **GitHub Actions (CI)** for bygg og container.
 
-## 🚀 Start i Codespaces (anbefalt – null installasjon)
-1. Opprett et nytt GitHub‑repo og last opp filene i denne ZIP‑en.
-2. Klikk **Code ▸ Codespaces ▸ Create codespace on main**.
-3. Når Codespace er klart, åpnes VS Code i nettleser. Terminalen kjører `postCreateCommand` (restore).
-4. Kjør appen:
+> Rask demo, lett å vise frem i intervju, og et fint utgangspunkt for å lære .NET 8 + cloud‑flyt.
+
+---
+
+## ⚡️ TL;DR (kjør i Codespaces – null installasjon)
+1. Åpne repoet → **Code → Codespaces → Create codespace on main**
+2. I terminalen:
    ```bash
    cd Movies.Api
    dotnet run
    ```
-5. Når Codespaces spør om å åpne port **5000**, velg **Open in Browser**.
-   - Swagger: `http://<your-codespace-url>/swagger`
-   - Health: `http://<your-codespace-url>/health`
+3. Når port **5000** dukker opp → **Open in Browser**  
+   - Swagger: `/swagger`  
+   - Health: `/health`
 
-> Devcontainer setter `ASPNETCORE_URLS=http://0.0.0.0:5000` og forwarder port **5000**.
+> Tips: I **PORTS**-panelet kan du sette port 5000 til **Public** for å dele lenken.
+
+---
 
 ## 🧪 Lokalt (hvis du har .NET 8 installert)
 ```bash
@@ -33,14 +37,7 @@ docker run -p 8080:8080 movies-api
 # Swagger: http://localhost:8080/swagger
 ```
 
-## 📦 GH Actions CI (build + Docker + push til GHCR)
-Workflow: `.github/workflows/ci.yml` gjør:
-- .NET restore/build/publish
-- Docker buildx (multi‑platform ready)
-- Push til **GitHub Container Registry (GHCR)** med tagger `latest` og commit‑SHA
-
-For push må repoet ha Actions‑tillatelse **packages: write** (satt i workflow) og det holder å bruke `GITHUB_TOKEN` (default). Image legges da på:
-`ghcr.io/<owner>/<repo>:latest`
+---
 
 ## 🔌 Endepunkter
 - `GET /api/movies` – liste (støtter `?q=` søk)
@@ -51,7 +48,7 @@ For push må repoet ha Actions‑tillatelse **packages: write** (satt i workflow
 - `GET /health` – health check
 - `GET /` – velkomst
 
-### Eksempel POST
+### Eksempel POST‑body
 ```json
 {
   "title": "Blade Runner",
@@ -61,7 +58,48 @@ For push må repoet ha Actions‑tillatelse **packages: write** (satt i workflow
 }
 ```
 
-## 🔧 Neste steg (valgfritt)
-- EF Core + SQLite i stedet for in‑memory
-- GitHub Actions: deploy til Azure Web App for Containers
-- Legg på en enkel React‑frontend som kaller API‑et
+---
+
+## 📁 Strukturen i repoet
+```
+.
+├─ Movies.Api/
+│  ├─ Program.cs                  # Minimal API + Swagger + Health + CORS + seed
+│  ├─ Movies.Api.csproj           # .NET 8 web + Swagger-pakke
+│  ├─ Dockerfile                  # Bygger slankt runtime-image
+│  ├─ appsettings.json            # Konfig (tom nå)
+│  └─ Properties/
+│     └─ launchSettings.json      # Binder til http://0.0.0.0:5000 i dev
+├─ .devcontainer/
+│  └─ devcontainer.json           # Codespaces-miljø (port 5000 forwardes)
+├─ .github/workflows/
+│  └─ ci.yml                      # CI: dotnet build + docker build + push til GHCR
+└─ docs/
+   └─ for-dummies-no.md           # En enklere guide med forklaringer
+```
+
+---
+
+## 🤖 CI (GitHub Actions + GHCR)
+Workflow `./.github/workflows/ci.yml` gjør:
+- `dotnet restore/build/publish`
+- Docker buildx (multi‑platform klart)
+- Push til **GitHub Container Registry (GHCR)** med tagger `latest` og commit‑SHA
+
+Image publiseres som:  
+`ghcr.io/<owner>/<repo>:<tag>`
+
+> For push holder standard `GITHUB_TOKEN` (permissions er satt i workflow).
+
+---
+
+## 🛠 Feilsøking
+- **Ingen port-popup?** Kjør: `dotnet run --urls http://0.0.0.0:5050` → åpne port 5050 i **PORTS**-panelet.
+- **Restore feilet første gang?** `dotnet restore && dotnet run`
+- **Ser 3 filmer uten å poste noe?** Det er **seed‑data** for demo.
+- **Data forsvinner ved restart?** Lagring er **in-memory** i POC‑en (ingen database).
+
+---
+
+## 📘 Mer dokumentasjon
+Se **[docs/for-dummies-no.md](docs/for-dummies-no.md)** for en veldig enkel forklaring på hva alt er og hvorfor.
